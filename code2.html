@@ -25,20 +25,30 @@ h2 {font-size: 200%}
     function encryptMessage() {
       const message = document.getElementById("inputText").value;
       const key = document.getElementById("secretKey").value;
+      
       if (!message || !key) {
         alert("Please enter both a message and a secret key.");
         return;
       }
+      
+      // Check for password strength
+      if (!isStrongKey(key)) {
+        return;
+      }
+      
       const encrypted = CryptoJS.AES.encrypt(message, key).toString();
       document.getElementById("outputText").value = encrypted;
     }
+
     function decryptMessage() {
       const encryptedText = document.getElementById("inputText").value;
       const key = document.getElementById("secretKey").value;
+      
       if (!encryptedText || !key) {
         alert("Please enter both encrypted text and the secret key.");
         return;
       }
+      
       try {
         const decrypted = CryptoJS.AES.decrypt(encryptedText, key);
         const plaintext = decrypted.toString(CryptoJS.enc.Utf8);
@@ -49,6 +59,42 @@ h2 {font-size: 200%}
       } catch (e) {
         document.getElementById("outputText").value = "❌ Decryption failed. Check your key or input.";
       }
+    }
+
+    // Add this new function to check password strength
+    function isStrongKey(key) {
+      // Common password list
+      const commonPasswords = [
+        "password", "123456", "12345678", "qwerty", "abc123", "letmein",
+        "monkey", "admin", "welcome", "password1", "1234", "12345",
+        "secret", "123123", "654321", "master", "hello", "111111",
+        "sunshine", "football", "baseball", "soccer", "princess", "dragon",
+        "superman", "batman", "trustno1", "iloveyou", "starwars", "ashley",
+        "shadow", "michael", "jennifer", "000000", "passw0rd", "charlie"
+      ];
+      
+      // Check for common passwords
+      if (commonPasswords.includes(key.toLowerCase())) {
+        alert("Security alert: You're using a commonly known password. Please choose a stronger key.");
+        return false;
+      }
+      
+      // Check for minimum length
+      if (key.length < 8) {
+        alert("Your key must be at least 8 characters long.");
+        return false;
+      }
+      
+      // Check for complexity (must contain at least one number and one special character)
+      const hasNumber = /\d/.test(key);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(key);
+      
+      if (!hasNumber || !hasSpecial) {
+        alert("Your key must contain at least one number and one special character.");
+        return false;
+      }
+      
+      return true;
     }
 </script>
 </body>
