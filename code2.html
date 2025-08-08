@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Secure LGS Tool</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<style type="text/css">
+body {font-family: Times New Roman;
+background-image:url("C:/Users/Chakrika/Desktop/pic.png");
+image-size:200%;
+text-align: center; font-size: 200%}
+h2 {font-size: 200%}
+</style>
+</head>
+<body>
+<h2>🔐 LGS Encryption & Decryption</h2>
+<label for="inputText">Message:</label><br>
+<textarea id="inputText" rows="4" cols="50" placeholder="Enter your message or encrypted text"></textarea><br><br>
+<label for="secretKey">Secret Key:</label><br>
+<input type="password" id="secretKey" placeholder="Enter your secret key"><br><br>
+<button onclick="encryptMessage()">Encrypt</button>
+<button onclick="decryptMessage()">Decrypt</button><br><br>
+<label for="outputText">Output:</label><br>
+<textarea id="outputText" rows="4" cols="50" readonly></textarea>
+<script>
+    function encryptMessage() {
+      const message = document.getElementById("inputText").value;
+      const key = document.getElementById("secretKey").value;
+      if (!message || !key) {
+        alert("Please enter both a message and a secret key.");
+        return;
+      }
+      const encrypted = CryptoJS.AES.encrypt(message, key).toString();
+      document.getElementById("outputText").value = encrypted;
+    }
+    function decryptMessage() {
+      const encryptedText = document.getElementById("inputText").value;
+      const key = document.getElementById("secretKey").value;
+      if (!encryptedText || !key) {
+        alert("Please enter both encrypted text and the secret key.");
+        return;
+      }
+      try {
+        const decrypted = CryptoJS.AES.decrypt(encryptedText, key);
+        const plaintext = decrypted.toString(CryptoJS.enc.Utf8);
+        if (!plaintext) {
+          throw new Error("Invalid key or corrupted data.");
+        }
+        document.getElementById("outputText").value = plaintext;
+      } catch (e) {
+        document.getElementById("outputText").value = "❌ Decryption failed. Check your key or input.";
+      }
+    }
+</script>
+</body>
+</html>
